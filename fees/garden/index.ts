@@ -9,32 +9,32 @@ const chainMapper: Record<string, string> = {
     [CHAIN.ARBITRUM]: "ethereum_arbitrum",
 };
 
-const baseUrl = "http://leaderboard.garden.finance";
+const baseUrl = "https://referral.garden.finance";
 
 const feeUrl = (chain: string, timestamp: number, interval?: string) =>
     `${baseUrl}/fee?chain=${chain}&end=${timestamp}${
         interval ? `&interval=${interval}` : ""
     }`;
 
-type IApiFeeResponse = {
+type ApiFeeResponse = {
     data: {
         fee: string;
     };
 };
 
 const fetch = (chain: string) => async ({ endTimestamp }: FetchOptions) => {
-    const dailyFeeResponse: IApiFeeResponse = (
+    const dailyFeeResponse: ApiFeeResponse = (
         await fetchURL(feeUrl(chainMapper[chain], endTimestamp, "day"))
     );
 
-    const totalFeeResponse: IApiFeeResponse = (
+    const totalFeeResponse: ApiFeeResponse = (
         await fetchURL(feeUrl(chainMapper[chain], endTimestamp))
     );
 
     const dailyUserFees = new BigNumber(dailyFeeResponse.data.fee);
     const totalUserFees = new BigNumber(totalFeeResponse.data.fee);
 
-    // //response is in usd
+    //response is in usd
     const dailyFees = dailyUserFees;
     const totalFees = totalUserFees;
 
